@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <title>3D Tiles Demo</title>
+  <style>
+    /* 全画面表示 */
+    html, body, #cesiumContainer {
+      width: 100%; height: 100%; margin: 0; padding: 0;
+      overflow: hidden;
+    }
+  </style>
+  <!-- CesiumJS の CDN -->
+  <script src="https://unpkg.com/cesium@1.106.0/Build/Cesium/Cesium.js"></script>
+  <link href="https://unpkg.com/cesium@1.106.0/Build/Cesium/Widgets/widgets.css"
+        rel="stylesheet" />
+</head>
+<body>
+  <div id="cesiumContainer"></div>
+  <script>
+    // Viewer の初期化
+    const viewer = new Cesium.Viewer('cesiumContainer', {
+      terrainProvider: Cesium.createWorldTerrain(), // 世界地形を読み込む場合
+      timeline: false,
+      animation: false,
+    });
+
+    // 3D Tileset の URL を指定
+    const tilesetUrl = '/tiles/tileset.json';
+
+    // タイルセットをシーンに追加
+    const tileset = new Cesium.Cesium3DTileset({
+      url: tilesetUrl,
+      maximumScreenSpaceError: 16, // 描画品質の調整
+    });
+    viewer.scene.primitives.add(tileset);
+
+    // タイルセットが読み込まれたらビューポートを合わせる
+    tileset.readyPromise.then(() => {
+      viewer.zoomTo(tileset);
+    }).otherwise((error) => {
+      console.error(error);
+    });
+  </script>
+</body>
+</html>
