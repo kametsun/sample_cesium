@@ -1,9 +1,13 @@
 import { Hono } from "hono";
 import { serveStatic } from "hono/bun";
+import { cors } from "hono/cors";
+import { logger } from "hono/logger";
 
 const app = new Hono();
 
-// /tiles/* へのリクエストをoutputディレクトリから提供
+app.use("*", logger());
+app.use("/tiles/*", cors({ origin: "*" }));
+
 app.get(
   "/tiles/*",
   serveStatic({
@@ -12,7 +16,6 @@ app.get(
   })
 );
 
-// publicディレクトリのコンテンツをルートパスで提供
 app.get(
   "/*",
   serveStatic({
